@@ -46,28 +46,19 @@ class SleepTrackerFragment : Fragment() {
         val binding: FragmentSleepTrackerBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_sleep_tracker, container, false)
 
-        // we need a reference to the application that this fragment is attached to
-        // to pass into the ViewModelFactory provider
         val application = requireNotNull(this.activity).application
 
-        // we need a reference to a data source via a reference to the DAO
         val dataSource = SleepDatabase.getInstance(application).sleepDatabaseDao
 
-        // create an instance of the SleepTrackerViewModelFactory
-        // pass it the data source as well as the application
         val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
 
-        // ask the ViewModelProvider for a SleepTrackerViewModel
-        // we pass in our ViewModelFactory and request an instance of the SleepTrackerViewModel
         val sleepTrackerViewModel =
-            ViewModelProvider(
-                this, viewModelFactory).get(SleepTrackerViewModel::class.java)
+                ViewModelProvider(
+                        this, viewModelFactory).get(SleepTrackerViewModel::class.java)
 
-        // we specify the current activity as the lifecycle owner of the binding
-        binding.setLifecycleOwner(this)
-
-        // assign the sleepTrackerViewModel to the binding
         binding.sleepTrackerViewModel = sleepTrackerViewModel
+
+        binding.lifecycleOwner = this
 
         return binding.root
     }
