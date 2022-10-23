@@ -15,3 +15,53 @@
  */
 
 package com.example.android.trackmysleepquality.database
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+
+// here we tell the database what entity to use, version number, and export schema
+@Database(entities = [SleepNight::class], version = 1,  exportSchema = false)
+abstract class SleepDatabase : RoomDatabase() {
+    //here we tell the database what dao to use
+    abstract val sleepDatabaseDao: SleepDatabaseDao
+
+    // companion object allows clients to access the methods without instantiating the class
+    companion object {
+        // declare a private nullable variable for the database
+        // initialize it to null
+        // this will help us avoid repeatedly opening connections to the database
+        // always up to date and the same to all execution threads
+        @Volatile
+        private var INSTANCE: SleepDatabase? = null
+
+        // returns a reference to the sleep database
+        fun getInstance(context: Context): SleepDatabase {
+            // multiple threads can ask for a database instance
+            // makes sure the database only gets initialized once
+            synchronized(this) {
+                var instance = INSTANCE
+
+                // we invoke room database builder and supply the context that we passed in,
+                // the database class, and the name of the database
+                if(instance == null) {
+                    instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        SleepDatabase::class.java,
+                        "sleep_history_database"
+                    )
+                        // we just wipe and rebuild the database
+                        // alternatively, a smart migration strategy can be defined here
+                        .fallbackToDestructiveMigration()
+                        .build()
+                    INSTANCE = instance
+                }
+
+                return instance
+            }
+        }
+
+    }
+
+}
