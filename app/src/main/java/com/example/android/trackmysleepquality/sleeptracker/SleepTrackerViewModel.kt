@@ -24,8 +24,14 @@ import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 /**
  * ViewModel for SleepTrackerFragment.
  */
+
+// takes application context as a parameter and makes it available as a property
 class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application) : AndroidViewModel(application) {
+
+// it is a good practice to just use the minimum objects to keep database and view model cleanly separate
+
+
 }
 
