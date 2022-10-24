@@ -30,17 +30,33 @@ class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application) : AndroidViewModel(application) {
 
-    /**
-     */
-
-    /**
-     *
-     *
-     */
-
     private var tonight = MutableLiveData<SleepNight?>()
 
     private val nights = database.getAllNights()
+
+    // start button is visible if tonight is null
+    // stop button is visible if tonight is not null
+    // clear button is visible if nights is not empty
+    val startButtonVisible = Transformations.map(tonight) {
+        null == it
+    }
+    val stopButtonVisible = Transformations.map(tonight) {
+        null != it
+    }
+    val clearButtonVisible = Transformations.map(nights) {
+        it?.isNotEmpty()
+    }
+
+    private var _showSnackbarEvent = MutableLiveData<Boolean>()
+
+    val showSnackBarEvent: LiveData<Boolean>
+        get() = _showSnackbarEvent
+
+    fun doneShowingSnackbar() {
+        _showSnackbarEvent.value = false
+    }
+
+
 
     // set a LiveData that changes when we want to navigate to sleep quality selector
     private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
@@ -142,10 +158,9 @@ class SleepTrackerViewModel(
 
             // And clear tonight since it's no longer in the database
             tonight.value = null
+
+            _showSnackbarEvent.value = true
         }
     }
-
-    /**
-     */
 }
 
