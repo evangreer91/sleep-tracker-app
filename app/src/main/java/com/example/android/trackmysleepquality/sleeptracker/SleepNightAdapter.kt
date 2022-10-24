@@ -1,7 +1,10 @@
 package com.example.android.trackmysleepquality.sleeptracker
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.TextItemViewHolder
 import com.example.android.trackmysleepquality.database.SleepNight
 
@@ -10,7 +13,13 @@ import com.example.android.trackmysleepquality.database.SleepNight
 //recycler view works directly with view holders
 class SleepNightAdapter: RecyclerView.Adapter<TextItemViewHolder>() {
     // RecyclerView won't use data directly
+    // add a custom setter to tell Kotlin when the data its displaying has changed
+    // notifyDataSetChanged causes the recycler view to redraw everything on screen
     var data = listOf<SleepNight>()
+        set (value) {
+            field = value
+            notifyDataSetChanged()
+    }
 
     // first, recyclerView needs to know how many items we are displaying
     override fun getItemCount() = data.size
@@ -21,7 +30,14 @@ class SleepNightAdapter: RecyclerView.Adapter<TextItemViewHolder>() {
         holder.textView.text = item.sleepQuality.toString()
     }
 
+    // when recycler view needs a new view holder, it creates one
+    // parent is the view group into which the new view will be added after its bound to an adapter position
+    // recycler view hands us the parent
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextItemViewHolder {
-        TODO("Not yet implemented")
+        //inflate text view from parent context
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = layoutInflater.inflate(R.layout.text_item_view, parent, false) as TextView
+
+        return TextItemViewHolder(view)
     }
 }

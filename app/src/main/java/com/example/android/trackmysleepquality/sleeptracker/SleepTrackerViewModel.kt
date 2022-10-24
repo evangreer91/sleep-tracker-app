@@ -32,7 +32,7 @@ class SleepTrackerViewModel(
 
     private var tonight = MutableLiveData<SleepNight?>()
 
-    private val nights = database.getAllNights()
+    val nights = database.getAllNights()
 
     // start button is visible if tonight is null
     // stop button is visible if tonight is not null
